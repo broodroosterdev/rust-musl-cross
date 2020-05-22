@@ -32,7 +32,8 @@ RUN cd /tmp && \
     mv musl-cross-make-master musl-cross-make && \
     cp /tmp/config.mak /tmp/musl-cross-make/config.mak && \
     cd /tmp/musl-cross-make && \
-    TARGET=x86_64-unknown-linux-musl make install > /tmp/musl-cross-make.log && \
+    export TARGET=x86_64-unknown-linux-musl && \
+    make install > /tmp/musl-cross-make.log && \
     ln -s /usr/local/musl/bin/$TARGET-strip /usr/local/musl/bin/musl-strip && \
     cd /tmp && \
     rm -rf /tmp/musl-cross-make /tmp/musl-cross-make.log
