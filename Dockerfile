@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 ARG TOOLCHAIN=stable
 ARG TARGET=x86_64-unknown-linux-musl
 ARG OPENSSL_ARCH=linux-x86_64
-
+ARG POSTGRESQL_VERSION=11.7
 ENV RUST_MUSL_CROSS_TARGET=$TARGET
 
 # Make sure we have basic dev tools for building C libraries.  Our goal
