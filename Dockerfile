@@ -87,13 +87,21 @@ RUN export CC=$TARGET_CC && \
     ./Configure $OPENSSL_ARCH -fPIC --prefix=/usr/local/musl/$TARGET && \
     make depend && \
     make && sudo make install && \
-    cd .. && rm -rf openssl-$VERS.tar.gz openssl-$VERS checksums.txt
-
+    cd .. && rm -rf openssl-$VERS.tar.gz openssl-$VERS checksums.txt && \
+    echo "Building Libpq" && \
+    curl -fLO "https://ftp.postgresql.org/pub/source/v$POSTGRESQL_VERSION/postgresql-$POSTGRESQL_VERSION.tar.gz" && \
+    tar xzf "postgresql-$POSTGRESQL_VERSION.tar.gz" && cd "postgresql-$POSTGRESQL_VERSION" && \
+    ./configure --with-openssl --without-readline --prefix=/usr/local/musl/$TARGET && \
+    cd src/interfaces/libpq && make all-static-lib && sudo make install-lib-static && \
+    cd ../../bin/pg_config && make && sudo make install && \
+    cd .. && rm -rf postgresql-$POSTGRESQL_VERSION.tar.gz postgresql-$POSTGRESQL_VERSION
+    
 ENV OPENSSL_DIR=/usr/local/musl/$TARGET/ \
     OPENSSL_INCLUDE_DIR=/usr/local/musl/$TARGET/include/ \
     DEP_OPENSSL_INCLUDE=/usr/local/musl/$TARGET/include/ \
     OPENSSL_LIB_DIR=/usr/local/musl/$TARGET/lib/ \
-    OPENSSL_STATIC=1
+    OPENSSL_STATIC=1 \
+    PQ_LIB_STATIC=1 \
 
 # Remove docs and more stuff not needed in this images to make them smaller
 RUN rm -rf /root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/
